@@ -144,6 +144,7 @@ const FieldImpl = defineComponent({
       uncheckedValue,
       label,
       validateOnValueUpdate: false,
+      syncVModel: false,
     });
 
     // If there is a v-model applied on the component we need to emit the `update:modelValue` whenever the value binding changes
