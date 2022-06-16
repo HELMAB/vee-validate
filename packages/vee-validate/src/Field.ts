@@ -11,7 +11,14 @@ import {
 } from 'vue';
 import { getConfig } from './config';
 import { RuleExpression, useField } from './useField';
-import { normalizeChildren, hasCheckedAttr, shouldHaveValueBinding, isPropPresent, normalizeEventValue } from './utils';
+import {
+  normalizeChildren,
+  hasCheckedAttr,
+  shouldHaveValueBinding,
+  isPropPresent,
+  normalizeEventValue,
+  applyModelModifiers,
+} from './utils';
 import { toNumber } from '../../shared';
 import { IS_ABSENT } from './symbols';
 import { FieldMeta } from './types';
@@ -207,7 +214,7 @@ const FieldImpl = defineComponent({
         return;
       }
 
-      if (newModelValue !== applyModifiers(value.value, props.modelModifiers)) {
+      if (newModelValue !== applyModelModifiers(value.value, props.modelModifiers)) {
         value.value = (newModelValue as any) === IS_ABSENT ? undefined : newModelValue;
         validateField();
       }
@@ -278,14 +285,6 @@ function resolveValidationTriggers(props: Partial<ValidationTriggersProps>) {
     validateOnBlur: props.validateOnBlur ?? validateOnBlur,
     validateOnModelUpdate: props.validateOnModelUpdate ?? validateOnModelUpdate,
   };
-}
-
-function applyModifiers(value: unknown, modifiers: Record<string, boolean>) {
-  if (modifiers.number) {
-    return toNumber(value as string);
-  }
-
-  return value;
 }
 
 function resolveInitialValue(props: Record<string, unknown>, ctx: SetupContext<any>) {
